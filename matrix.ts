@@ -2,14 +2,16 @@ import { I2C } from "./i2c";
 import * as consts from "./constants";
 
 class Matrix {
-    private size = [8,8];
-    private flag = true;
     private bus: I2C;
     private address;
 
     constructor(address: number) {
         this.bus = new I2C();
         this.address = parseInt(`0x${address}`);
+        this.resetMatrix();
+    }
+
+    private resetMatrix = () => {
         this.writeCommand(consts.CONFIGURE_CMD_PAGE, consts.FUNCTION_PAGE);
         this.writeCommand(consts.SW_SHUT_DOWN_REG, 0x0);
         this.writeCommand(consts.PICTURE_DISPLAY_REG, 0x10);
@@ -63,11 +65,13 @@ class Matrix {
                 case "green":
                     return [0,255,0];
                 case "blue":
-                    return [0,0,255];
+                    return [85, 205, 252];
                 case "white":
                     return [255,255,255];
                 case "black":
                     return [0,0,0];
+                case "pink":
+                    return [247, 168, 184];
                 default:
                     return [0,0,0];
             }
@@ -75,7 +79,6 @@ class Matrix {
     }
 
     public writeMap = (image: number[][]) => {
-        image = image.reverse();
         const reds = image.map((numArr) => numArr[0]);
         const greens = image.map((numArr) => numArr[1]);
         const blues = image.map((numArr) => numArr[2]);
